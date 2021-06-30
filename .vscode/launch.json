@@ -8,7 +8,7 @@
             "type": "lldb",
             "request": "launch",
             "name": "Debug",
-            "program": "${workspaceFolder}/guessing_game/target/debug/guessing_game",
+            "program": "${workspaceFolder}/greprs/target/debug/greprs",
             "args": [],
             "cwd": "${workspaceFolder}"
         }
