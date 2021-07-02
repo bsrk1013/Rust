@@ -8,7 +8,7 @@
             "type": "lldb",
             "request": "launch",
             "name": "Debug",
-            "program": "${workspaceFolder}/greprs/target/debug/greprs",
+            "program": "${workspaceFolder}/closure_iter/target/debug/closure_iter",
             "args": [],
             "cwd": "${workspaceFolder}"
         }

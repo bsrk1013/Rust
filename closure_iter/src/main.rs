@@ -1,9 +1,14 @@
+extern crate closure_iter;
+
 use std::thread;
 use std::time::Duration;
 
 fn main() {
     workout_test();
-    cacher_test();
+    closure_test();
+    iter_test();
+    counter_test();
+    modified_counter_test();
 }
 
 fn workout_test() {
@@ -11,91 +16,97 @@ fn workout_test() {
     let simulated_random_number = 7;
 
     generate_workout(simulated_user_specified_value, simulated_random_number);
-}
 
-fn cacher_test() {
-    let plus_calc_closure = |num: u32| num + 5;
-    let mut plus_cacher = Cacher::new(plus_calc_closure);
-
-    plus_cacher.value(10);
-    println! {"calc:{}", plus_cacher.value.unwrap()};
+    fn generate_workout(intensity: u32, random_number: u32) {
+        let expensive_closure = |num| {
+            println!("calculating slowly...");
+            thread::sleep(Duration::from_millis(500));
+            num
+        };
+        let mut workout_cacher = Cacher::new(expensive_closure);
+        let intensity = workout_cacher.value(intensity);
+        if intensity < 25 {
+            println!("Today, do {} pushups!", intensity);
+            println!("Next, do {} situps!", intensity);
+        } else {
+            if random_number == 3 {
+                println!("Take a break today! Remember to stay hydrated!");
+            } else {
+                println!("Today, run for {} minutes!", intensity);
+            }
+        }
+    }
+    struct Cacher<T>
+    where
+        T: Fn(u32) -> u32,
+    {
+        calculation: T,
+        value: Option<u32>,
+    }
+    impl<T> Cacher<T>
+    where
+        T: Fn(u32) -> u32,
+    {
+        fn new(calculation: T) -> Cacher<T> {
+            Cacher {
+                calculation,
+                value: None,
+            }
+        }
+        fn value(&mut self, arg: u32) -> u32 {
+            match self.value {
+                Some(v) => {
+                    if v != arg {
+                        self.value = Some(arg);
+                    }
+                    arg
+                }
+                None => {
+                    let v = (self.calculation)(arg);
+                    self.value = Some(v);
+                    v
+                }
+            }
+        }
+    }
 }
 
 fn closure_test() {
-    let mut x = 10;
-    let fn_closure = || println!("fn x:{}", x);
-    let fnmut_closure = || {
-        x = 1;
-        println!("fnmut x:{}", x);
-    };
-    let fnonce_closure = move || println!("fnonce x:{}", x);
+    let x = vec![1, 2, 3];
 
-    fn_closure();
-    // fnmut_closure();
+    let equal_to_x = move |z| z == x;
 
-    println!("finaly x:{}", x);
+    // println!("can't use x here: {:?}", x);
+
+    let y = vec![1, 2, 3];
+    assert!(equal_to_x(y));
+    //println!("finaly x:{}", x);
 }
 
-fn simulation_expensive_calculation(intensity: u32) -> u32 {
-    println!("calculating slowly...");
-    thread::sleep(Duration::from_secs(2));
-    intensity
+fn iter_test() {
+    let v1 = vec![1, 2, 3];
+    let v2: Vec<_> = v1.iter().map(|x| x + 1).collect();
+
+    assert_eq!(v2, vec![2, 3, 4])
 }
 
-fn generate_workout(intensity: u32, random_number: u32) {
-    let expensive_closure = |num| {
-        println!("calculating slowly...");
-        thread::sleep(Duration::from_secs(2));
-        num
-    };
-
-    let mut workout_cacher = Cacher::new(expensive_closure);
-    let intensity = workout_cacher.value(intensity);
-
-    if intensity < 25 {
-        println!("Today, do {} pushups!", intensity);
-        println!("Next, do {} situps!", intensity);
-    } else {
-        if random_number == 3 {
-            println!("Take a break today! Remember to stay hydrated!");
-        } else {
-            println!("Today, run for {} minutes!", intensity);
-        }
+fn counter_test() {
+    let counter = closure_iter::Counter::new();
+    for num in counter {
+        println!("{}", num);
     }
 }
 
-struct Cacher<T>
-where
-    T: Fn(u32) -> u32,
-{
-    calculation: T,
-    value: Option<u32>,
-}
-
-impl<T> Cacher<T>
-where
-    T: Fn(u32) -> u32,
-{
-    fn new(calculation: T) -> Cacher<T> {
-        Cacher {
-            calculation,
-            value: None,
-        }
+fn modified_counter_test() {
+    let mut counter = closure_iter::ModifiedCounter::new();
+    let iter = counter.iter();
+    for num in iter {
+        println!("iter:{}", num);
     }
+    println!("counter.count:{}", counter.count);
 
-    fn value(&mut self, arg: u32) -> u32 {
-        match self.value {
-            Some(v) => {
-                if v != arg {
-                    self.value = Some(arg);
-                }
-                arg
-            }
-            None => {
-                let v = (self.calculation)(arg);
-                self.value = Some(v);
-                v
-            }
-        }
+    let array = vec![1, 2, 3, 4];
+    for num in array {
+        println!("array:{}", num);
     }
 }
