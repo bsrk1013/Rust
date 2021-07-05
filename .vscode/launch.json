@@ -8,7 +8,7 @@
             "type": "lldb",
             "request": "launch",
             "name": "Debug",
-            "program": "${workspaceFolder}/closure_iter/target/debug/closure_iter",
+            "program": "${workspaceFolder}/smart_pointer/target/debug/smart_pointer",
             "args": [],
             "cwd": "${workspaceFolder}"
         }
