@@ -66,6 +66,14 @@ pub fn run(config: Config) -> Result<(), std::io::Error> {
     Ok(())
 }
 
+///Search for query in contents
+/// # Examples
+/// ```
+/// let contents = "aaa bbb ccc ddd";
+/// let query = "aaa";
+/// let result = search(query, contents);
+/// result => "aaa"
+/// ```
 pub fn search<'a>(query: &str, contents: &'a str) -> Vec<&'a str> {
     contents.lines().filter(|c| c.contains(query)).collect()
 }
