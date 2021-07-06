@@ -1,12 +1,42 @@
 use std::collections::HashMap;
 use std::collections::HashSet;
+use std::env;
 use std::io;
-use std::ops::Index;
+use std::str::FromStr;
 
 fn main() {
-    generator_test();
-    hash_test_1();
-    a_number_test();
+    test();
+    // generator_test();
+    // a_number_test();
+}
+
+fn test() {
+    let mut args = env::args();
+
+    let str_num = match args.next() {
+        Some(value) => value,
+        None => {
+            panic!("failed")
+        }
+    };
+    // println!("{}", str_num);
+
+    let split_vec: Vec<_> = str_num.split(" ").collect();
+    let split_vec: Vec<i32> = split_vec
+        .into_iter()
+        .map(|x| FromStr::from_str(x).unwrap())
+        .collect();
+
+    let a = split_vec[0];
+    let b = split_vec[1];
+
+    if a > b {
+        println!(">");
+    } else if a < b {
+        println!("<");
+    } else {
+        println!("==")
+    }
 }
 
 fn hash_test_1() {
