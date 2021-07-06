@@ -4,9 +4,17 @@ fn main() {
     let b = Box::new(5);
     println!("b={}", b);
 
+    test();
     test_1();
     test_2();
     test_3();
+}
+
+fn test() {
+    let a = 5;
+    let b = 2;
+    let c = a ^ b;
+    println!("result:{}", c);
 }
 
 fn test_1() {

@@ -1,9 +1,47 @@
+use std::collections::HashMap;
 use std::collections::HashSet;
 use std::io;
+use std::ops::Index;
 
 fn main() {
     generator_test();
+    hash_test_1();
     a_number_test();
+}
+
+fn hash_test_1() {
+    let participant = vec!["mislav", "stanko", "mislav", "ana"];
+    let completion = vec!["stanko", "ana", "mislav"];
+
+    let mut tables = HashMap::<&str, i32>::new();
+
+    for member in participant {
+        match tables.get_mut(member) {
+            Some(value) => *value += 1,
+            None => {
+                tables.insert(member, 1);
+            }
+        };
+    }
+
+    for member in completion {
+        match tables.get_mut(member) {
+            Some(value) => {
+                *value -= 1;
+                match value {
+                    0 => {
+                        tables.remove(member);
+                    }
+                    _ => {}
+                };
+            }
+            _ => {}
+        };
+    }
+
+    let result: Vec<_> = tables.iter().collect();
+    let result = result[0];
+    println!("result:{}", result.0);
 }
 
 fn a_number_test() {
