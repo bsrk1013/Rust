@@ -5,7 +5,8 @@ use std::io;
 use std::str::FromStr;
 
 fn main() {
-    test();
+    // test();
+    network();
     // generator_test();
     // a_number_test();
 }
@@ -170,4 +171,32 @@ fn generator_test() {
     }
 
     println!("result:{}", result);
+}
+
+fn network() {
+    let computers = vec![vec![1, 1, 0], vec![1, 1, 1], vec![0, 1, 1]];
+    let n = computers.len();
+    let mut visited = vec![false; n];
+
+    let mut result = 0;
+    for i in 0..n {
+        if visited[i] == true {
+            continue;
+        }
+        dfs(&computers, &mut visited, i);
+        result += 1;
+    }
+
+    println!("network:{}", result);
+
+    fn dfs(computers: &Vec<Vec<i32>>, visited: &mut Vec<bool>, index: usize) {
+        visited[index] = true;
+        let size = computers.len();
+
+        for i in 0..size {
+            if computers[index][i] == 1 && visited[i] == false {
+                dfs(computers, visited, i);
+            }
+        }
+    }
 }
